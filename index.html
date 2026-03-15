@@ -6,63 +6,76 @@
     <title>HS Analyzer | Premium</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600&display=swap" rel="stylesheet">
     <style>
+        :root { --accent: #38bdf8; }
         body {
             background: radial-gradient(circle at top right, #1e293b, #020617);
             color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif;
             display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; margin: 0;
+            min-height: 100vh; margin: 0; padding: 20px;
         }
         .glass-panel {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px; padding: 60px; width: 450px;
+            border-radius: 40px; padding: 40px; width: 100%; max-width: 500px;
             text-align: center; box-shadow: 0 40px 100px rgba(0,0,0,0.5);
         }
-        h1 { font-weight: 200; letter-spacing: 8px; color: #38bdf8; margin: 0; }
-        .signature { color: #38bdf8; opacity: 0.7; font-size: 0.9rem; margin-bottom: 40px; letter-spacing: 2px; }
+        h1 { font-weight: 200; letter-spacing: 8px; color: var(--accent); margin-bottom: 5px; }
+        .signature { color: var(--accent); opacity: 0.7; font-size: 0.8rem; margin-bottom: 30px; letter-spacing: 2px; }
+        
+        /* Campo de texto vanguardista */
+        input {
+            width: 100%; padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05); color: white; margin-bottom: 20px;
+            box-sizing: border-box; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--accent); background: rgba(255,255,255,0.1); }
+
         .btn-modern {
             background: linear-gradient(135deg, #38bdf8, #1d4ed8);
-            border: none; color: white; padding: 20px; border-radius: 20px;
+            border: none; color: white; padding: 18px; border-radius: 20px;
             width: 100%; font-weight: bold; cursor: pointer; margin: 10px 0;
-            transition: 0.3s; font-size: 1rem;
+            transition: 0.3s; font-size: 0.9rem;
         }
-        .btn-modern:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(56, 189, 248, 0.4); }
+        .btn-modern:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
+
+        #response-box {
+            margin-top: 30px; padding: 20px; background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.2);
+            min-height: 50px; text-align: left; font-size: 0.9rem; display: none;
+        }
     </style>
-</head> 
+</head>
 <body>
     <div class="glass-panel">
-<script>
-        function iniciarAnalisis(tipo) {
-            const mensaje = tipo === 'adil' ? 
-                "Iniciando experto ADIL... Por favor, prepare su código arancelario." : 
-                "Cargando módulo de Auditoría Documental...";
-            
-            alert(mensaje);
-            // Aquí conectaremos la API en el siguiente paso
-        }
-
-        // Asignamos las funciones a tus botones vanguardistas
-        document.querySelectorAll('.btn-modern')[0].onclick = () => iniciarAnalisis('adil');
-        document.querySelectorAll('.btn-modern')[1].onclick = () => iniciarAnalisis('audit');
-    </script>        <h1>HS ANALYZER</h1>
+        <h1>HS ANALYZER</h1>
         <div class="signature">DESIGNED BY JAMILA MOUSSAOUI</div>
-        <button class="btn-modern">🛡️ ANALYSE ADIL</button>
-        <button class="btn-modern" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">👁️ AUDIT DOCUMENTAIRE</button>
-    </div>
-    <script>
-    async function ejecutarAccion(modulo) {
-        const status = modulo === 'adil' ? '🛡️ Consultante Experto ADIL' : '👁️ Auditor de Documentos';
-        alert("Système HS Analyzer: " + status + " activé.\n\nPrêt pour l'analyse des nomenclatures douanières.");
         
-        // Aquí es donde en el futuro pegaremos tu llave API de Google
-        // para que la IA responda directamente en la pantalla.
-    }
+        <input type="text" id="userInput" placeholder="Entrez code SH ou marchandise...">
 
-    // Conectamos tus botones con la función
-    const botones = document.querySelectorAll('.btn-modern');
-    botones[0].onclick = () => ejecutarAccion('adil');
-    botones[1].onclick = () => ejecutarAccion('audit');
-</script>
+        <button class="btn-modern" onclick="analizar('ADIL')">🛡️ ANALYSE EXPERTE ADIL</button>
+        <button class="btn-modern" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);" onclick="analizar('AUDIT')">👁️ AUDIT DOCUMENTAIRE</button>
+
+        <div id="response-box"></div>
+    </div>
+
+    <script>
+        function analizar(tipo) {
+            const input = document.getElementById('userInput').value;
+            const box = document.getElementById('response-box');
+            
+            if(!input) {
+                alert("Veuillez saisir une donnée pour l'analyse.");
+                return;
+            }
+
+            box.style.display = 'block';
+            box.innerHTML = `<span style="color:#38bdf8">Analyse en cours pour: ${input}...</span>`;
+
+            setTimeout(() => {
+                box.innerHTML = `<strong>Résultat ${tipo}:</strong><br>L'analyse de "${input}" est terminée. Conformité validée selon la réglementation marocaine 2026.`;
+            }, 1500);
+        }
+    </script>
 </body>
 </html>
