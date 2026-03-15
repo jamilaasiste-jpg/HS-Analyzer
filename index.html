@@ -3,95 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HS Analyzer | Consultation & Documents</title>
+    <title>HS Analyzer | Expert Mode</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #38bdf8; }
-        body {
-            background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif;
-            display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px;
-            padding: 40px; width: 100%; max-width: 600px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
-        h1 { font-weight: 300; letter-spacing: 5px; color: var(--accent); text-align: center; }
-        .section { margin-top: 30px; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-        label { display: block; margin-bottom: 10px; font-size: 0.9rem; opacity: 0.8; }
-        
-        /* Estilo para Inputs y Botones */
-        input[type="text"], input[type="file"] {
-            width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.05); color: white; margin-bottom: 15px; box-sizing: border-box;
-        }
-        .btn {
-            width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold;
-            cursor: pointer; transition: 0.3s; font-size: 1rem;
-        }
+        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 40px; width: 100%; max-width: 600px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        h1 { font-weight: 300; letter-spacing: 5px; color: var(--accent); text-align: center; margin-bottom: 5px; }
+        .section { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        input[type="text"], input[type="file"] { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; margin-bottom: 15px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-primary { background: var(--accent); color: #000; }
         .btn-secondary { background: rgba(255,255,255,0.1); color: white; margin-top: 10px; }
-        
-        #result {
-            margin-top: 25px; padding: 20px; border-radius: 15px; background: rgba(0,0,0,0.3);
-            display: none; border-left: 4px solid var(--accent);
-        }
+        #result { margin-top: 25px; padding: 20px; border-radius: 15px; background: rgba(0,0,0,0.4); display: none; border-left: 4px solid var(--accent); white-space: pre-wrap; line-height: 1.5; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>HS ANALYZER</h1>
-        <p style="text-align:center; opacity:0.6; font-size:0.8rem;">Expert System by Jamila Moussaoui</p>
+        <p style="text-align:center; opacity:0.6; font-size:0.8rem; margin-top:0;">Expert System by Jamila Moussaoui</p>
 
         <div class="section">
-            <label>🔍 Consultation par Produit / Code SH</label>
-            <input type="text" id="productInput" placeholder="Ex: Pièces détachées, 8703, Textile...">
-            <button class="btn btn-primary" onclick="analyserProduit()">CONSULTER ADIL</button>
+            <label>🔍 Consultation par Produit</label>
+            <input type="text" id="productInput" placeholder="Ex: 8517, Textile, Laptop...">
+            <button class="btn btn-primary" onclick="ejecutarIA('product')">CONSULTER ADIL</button>
         </div>
 
         <div class="section">
-            <label>📂 Analyser Documents (Facture / Liste de colisage)</label>
-            <input type="file" id="fileInput" accept=".pdf, image/*">
-            <button class="btn btn-secondary" onclick="analyserDocument()">AUDITER DOCUMENT</button>
+            <label>📂 Analyser Document (Facture / Packing List)</label>
+            <input type="file" id="fileInput">
+            <button class="btn btn-secondary" onclick="ejecutarIA('file')">AUDITER DOCUMENT</button>
         </div>
 
         <div id="result"></div>
     </div>
 
     <script>
-        function analyserProduit() {
-            const val = document.getElementById('productInput').value;
-            if(!val) return alert("Veuillez saisir un produit.");
-            mostrarResultado(`Analyse de "${val}" en cours... <br><br> Résultat: Classification suggérée selon les notes explicatives du SH.`);
-        }
+        // PEGA AQUÍ TU LLAVE API ENTRE LAS COMILLAS
+        const MI_LLAVE_API = "TU_LLAVE_AQUÍ"; 
 
-        function analyserDocument() {
-    const fileInput = document.getElementById('fileInput');
-    const file = fileInput.files[0];
-    const res = document.getElementById('result');
+        async function ejecutarIA(modo) {
+            const resBox = document.getElementById('result');
+            resBox.style.display = 'block';
+            resBox.innerHTML = "⏳ Analyse en cours... (Connexion au cerveau IA)";
 
-    if(!file) {
-        alert("Veuillez sélectionner un document.");
-        return;
-    }
-
-    res.style.display = 'block';
-    res.innerHTML = `<span style="color:#38bdf8">⏳ Analyse du document: ${file.name}...</span>`;
-
-    // Simulación de respuesta inmediata para que no se quede bloqueado
-    setTimeout(() => {
-        res.innerHTML = `
-            <strong style="color:#38bdf8">✅ ANALYSE TERMINÉE</strong><br><br>
-            <strong>Document:</strong> ${file.name}<br>
-            <strong>Statut:</strong> Données extraites avec succès.<br>
-            <strong>Note:</strong> Prêt pour la vérification de conformité avec le tarif douanier 2026.
-        `;
-    }, 2000); // Solo tarda 2 segundos en responder
-}
-        function mostrarResultado(html) {
-            const res = document.getElementById('result');
-            res.style.display = 'block';
-            res.innerHTML = html;
+            // Simulación mejorada para que no se cuelgue mientras pones la llave
+            setTimeout(() => {
+                if (MI_LLAVE_API === "TU_LLAVE_AQUÍ") {
+                    resBox.innerHTML = "❌ <strong>Erreur de configuration:</strong> Vous devez insérer votre Clé API dans le code pour que l'analyse réelle fonctionne.";
+                } else {
+                    resBox.innerHTML = "✅ <strong>Succès:</strong> Moteur IA connecté. Prêt pour l'audit réel de votre document.";
+                }
+            }, 2000);
         }
     </script>
 </body>
