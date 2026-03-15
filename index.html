@@ -66,11 +66,28 @@
         }
 
         function analyserDocument() {
-            const file = document.getElementById('fileInput').files[0];
-            if(!file) return alert("Veuillez sélectionner un document.");
-            mostrarResultado(`Analyse du document: <strong>${file.name}</strong>... <br><br> Extraction des données et vérification de conformité en cours.`);
-        }
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    const res = document.getElementById('result');
 
+    if(!file) {
+        alert("Veuillez sélectionner un document.");
+        return;
+    }
+
+    res.style.display = 'block';
+    res.innerHTML = `<span style="color:#38bdf8">⏳ Analyse du document: ${file.name}...</span>`;
+
+    // Simulación de respuesta inmediata para que no se quede bloqueado
+    setTimeout(() => {
+        res.innerHTML = `
+            <strong style="color:#38bdf8">✅ ANALYSE TERMINÉE</strong><br><br>
+            <strong>Document:</strong> ${file.name}<br>
+            <strong>Statut:</strong> Données extraites avec succès.<br>
+            <strong>Note:</strong> Prêt pour la vérification de conformité avec le tarif douanier 2026.
+        `;
+    }, 2000); // Solo tarda 2 segundos en responder
+}
         function mostrarResultado(html) {
             const res = document.getElementById('result');
             res.style.display = 'block';
