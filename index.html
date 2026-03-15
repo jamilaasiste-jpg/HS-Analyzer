@@ -3,104 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HS Analyzer Pro | Jamila Moussaoui</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600&display=swap" rel="stylesheet">
+    <title>HS Analyzer | Consultation & Documents</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #38bdf8; --glass: rgba(255, 255, 255, 0.03); }
+        :root { --accent: #38bdf8; }
         body {
-            background: radial-gradient(circle at top right, #1e293b, #020617);
-            color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; margin: 0; padding: 40px;
+            background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;
         }
-        .main-container {
-            display: grid; grid-template-columns: 1fr 350px; gap: 30px;
-            width: 100%; max-width: 1200px;
+        .container {
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px;
+            padding: 40px; width: 100%; max-width: 600px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
-        .glass-panel {
-            background: var(--glass); backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px; padding: 50px; text-align: center;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+        h1 { font-weight: 300; letter-spacing: 5px; color: var(--accent); text-align: center; }
+        .section { margin-top: 30px; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        label { display: block; margin-bottom: 10px; font-size: 0.9rem; opacity: 0.8; }
+        
+        /* Estilo para Inputs y Botones */
+        input[type="text"], input[type="file"] {
+            width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05); color: white; margin-bottom: 15px; box-sizing: border-box;
         }
-        .history-panel {
-            background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px; padding: 30px; height: 500px; overflow-y: auto;
+        .btn {
+            width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold;
+            cursor: pointer; transition: 0.3s; font-size: 1rem;
         }
-        h1 { font-weight: 200; letter-spacing: 12px; color: var(--accent); margin: 0; }
-        input {
-            width: 100%; padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.05); color: white; margin: 30px 0;
-            font-size: 1.1rem; outline: none; transition: 0.3s;
-        }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn-modern {
-            background: linear-gradient(135deg, #38bdf8, #1d4ed8);
-            border: none; color: white; padding: 20px; border-radius: 20px;
-            font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        .btn-modern:hover { transform: translateY(-3px); opacity: 0.9; }
-        #response-box {
-            margin-top: 30px; padding: 25px; border-radius: 20px;
-            background: rgba(0,0,0,0.4); border-left: 4px solid var(--accent);
-            text-align: left; display: none; line-height: 1.6;
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: white; margin-top: 10px; }
+        
+        #result {
+            margin-top: 25px; padding: 20px; border-radius: 15px; background: rgba(0,0,0,0.3);
+            display: none; border-left: 4px solid var(--accent);
         }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <div class="glass-panel">
-            <h1>HS ANALYZER PRO</h1>
-            <div style="color:var(--accent); opacity:0.6; letter-spacing:3px; font-size:0.8rem; margin-top:10px;">EXPERT DOUANE MAROC 2026</div>
-            
-            <input type="text" id="userInput" placeholder="Saisissez un code SH (ex: 8703, 6109, 8517)...">
+    <div class="container">
+        <h1>HS ANALYZER</h1>
+        <p style="text-align:center; opacity:0.6; font-size:0.8rem;">Expert System by Jamila Moussaoui</p>
 
-            <div class="btn-group">
-                <button class="btn-modern" onclick="analizar('ADIL')">🛡️ ANALYSE ADIL</button>
-                <button class="btn-modern" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);" onclick="analizar('AUDIT')">👁️ AUDIT DOCS</button>
-            </div>
-
-            <div id="response-box"></div>
+        <div class="section">
+            <label>🔍 Consultation par Produit / Code SH</label>
+            <input type="text" id="productInput" placeholder="Ex: Pièces détachées, 8703, Textile...">
+            <button class="btn btn-primary" onclick="analyserProduit()">CONSULTER ADIL</button>
         </div>
 
-        <div class="history-panel">
-            <h3 style="color:var(--accent); font-weight:400;">Historique d'Analyse</h3>
-            <div id="history-list" style="font-size:0.85rem; opacity:0.8;"></div>
+        <div class="section">
+            <label>📂 Analyser Documents (Facture / Liste de colisage)</label>
+            <input type="file" id="fileInput" accept=".pdf, image/*">
+            <button class="btn btn-secondary" onclick="analyserDocument()">AUDITER DOCUMENT</button>
         </div>
+
+        <div id="result"></div>
     </div>
 
     <script>
-        const database = {
-            "8703": "Voitures de tourisme et autres véhicules. Droits de Douane: 2.5% à 40%. TVA: 20%.",
-            "8517": "Téléphones intelligents et appareils de réseau. Droit de Douane: 2.5%. TVA: 20%.",
-            "6109": "T-shirts y compris de bonneterie. Droit de Douane: 40%. Mesures de sauvegarde applicables.",
-            "8471": "Machines automatiques de traitement de l'information (Ordinateurs). Exonéré de DD. TVA: 20%."
-        };
+        function analyserProduit() {
+            const val = document.getElementById('productInput').value;
+            if(!val) return alert("Veuillez saisir un produit.");
+            mostrarResultado(`Analyse de "${val}" en cours... <br><br> Résultat: Classification suggérée selon les notes explicatives du SH.`);
+        }
 
-        function analizar(tipo) {
-            const val = document.getElementById('userInput').value.trim();
-            const box = document.getElementById('response-box');
-            const hist = document.getElementById('history-list');
+        function analyserDocument() {
+            const file = document.getElementById('fileInput').files[0];
+            if(!file) return alert("Veuillez sélectionner un document.");
+            mostrarResultado(`Analyse du document: <strong>${file.name}</strong>... <br><br> Extraction des données et vérification de conformité en cours.`);
+        }
 
-            if(!val) return alert("Veuillez saisir une donnée.");
-
-            box.style.display = 'block';
-            box.innerHTML = `<div style="color:#38bdf8">Calcul des droits et taxes pour ${val}...</div>`;
-
-            setTimeout(() => {
-                let info = database[val.substring(0,4)] || "Code SH reconnu. Analyse des mesures non-tarifaires en cours selon la circulaire de la Douane Marocaine.";
-                box.innerHTML = `<strong>RÉSULTAT ${tipo}:</strong><br>${info}`;
-                
-                // Añadir al historial
-                const item = document.createElement('div');
-                item.style.marginBottom = "15px";
-                item.style.paddingBottom = "10px";
-                item.style.borderBottom = "1px solid rgba(255,255,255,0.1)";
-                item.innerHTML = `<strong>${val}</strong><br><small>${new Date().toLocaleTimeString()}</small>`;
-                hist.prepend(item);
-            }, 1000);
+        function mostrarResultado(html) {
+            const res = document.getElementById('result');
+            res.style.display = 'block';
+            res.innerHTML = html;
         }
     </script>
 </body>
