@@ -29,10 +29,23 @@
         }
         .btn-modern:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(56, 189, 248, 0.4); }
     </style>
-</head>
+</head> 
 <body>
     <div class="glass-panel">
-        <h1>HS ANALYZER</h1>
+<script>
+        function iniciarAnalisis(tipo) {
+            const mensaje = tipo === 'adil' ? 
+                "Iniciando experto ADIL... Por favor, prepare su código arancelario." : 
+                "Cargando módulo de Auditoría Documental...";
+            
+            alert(mensaje);
+            // Aquí conectaremos la API en el siguiente paso
+        }
+
+        // Asignamos las funciones a tus botones vanguardistas
+        document.querySelectorAll('.btn-modern')[0].onclick = () => iniciarAnalisis('adil');
+        document.querySelectorAll('.btn-modern')[1].onclick = () => iniciarAnalisis('audit');
+    </script>        <h1>HS ANALYZER</h1>
         <div class="signature">DESIGNED BY JAMILA MOUSSAOUI</div>
         <button class="btn-modern">🛡️ ANALYSE ADIL</button>
         <button class="btn-modern" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">👁️ AUDIT DOCUMENTAIRE</button>
