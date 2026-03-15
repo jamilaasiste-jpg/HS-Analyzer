@@ -50,5 +50,19 @@
         <button class="btn-modern">🛡️ ANALYSE ADIL</button>
         <button class="btn-modern" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">👁️ AUDIT DOCUMENTAIRE</button>
     </div>
+    <script>
+    async function ejecutarAccion(modulo) {
+        const status = modulo === 'adil' ? '🛡️ Consultante Experto ADIL' : '👁️ Auditor de Documentos';
+        alert("Système HS Analyzer: " + status + " activé.\n\nPrêt pour l'analyse des nomenclatures douanières.");
+        
+        // Aquí es donde en el futuro pegaremos tu llave API de Google
+        // para que la IA responda directamente en la pantalla.
+    }
+
+    // Conectamos tus botones con la función
+    const botones = document.querySelectorAll('.btn-modern');
+    botones[0].onclick = () => ejecutarAccion('adil');
+    botones[1].onclick = () => ejecutarAccion('audit');
+</script>
 </body>
 </html>
