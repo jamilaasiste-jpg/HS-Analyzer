@@ -12,7 +12,7 @@
         h1 { font-weight: 300; letter-spacing: 5px; color: var(--accent); text-align: center; margin-bottom: 5px; text-transform: uppercase; }
         .section { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
         label { display: block; margin-bottom: 10px; font-size: 0.85rem; color: var(--accent); }
-        input[type="text"], input[type="file"] { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; }
+        input[type="text"] { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; }
         .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; text-transform: uppercase; }
         .btn-primary { background: var(--accent); color: #000; }
         #result { margin-top: 30px; padding: 20px; border-radius: 15px; background: rgba(0,0,0,0.4); display: none; border-left: 4px solid var(--accent); white-space: pre-wrap; line-height: 1.6; }
@@ -27,60 +27,46 @@
     <div class="section">
         <label>🔍 Consultation par Produit</label>
         <input type="text" id="productInput" placeholder="Ex: Smartphones, 8517...">
-        <button class="btn btn-primary" onclick="analizar('text')">CONSULTER ADIL</button>
-    </div>
-
-    <div class="section">
-        <label>📂 Analyser Document (PDF/Image)</label>
-        <input type="file" id="fileInput">
-        <button class="btn btn-primary" style="background: rgba(255,255,255,0.1); color: white;" onclick="analizar('file')">AUDITER DOCUMENT</button>
+        <button class="btn btn-primary" onclick="analizar()">CONSULTER ADIL</button>
     </div>
 
     <div id="result"></div>
 </div>
 
 <script>
-    // IMPORTANTE: Pega tu nueva llave aquí dentro de las comillas
-    const API_KEY = "AIzaSyATP8-1M4V1MpiUuVL5GzXoXQuqqhWxBkQ"; 
+    // 1. GENERA UNA CLAVE TOTALMENTE NUEVA
+    // 2. PÉGALA AQUÍ DENTRO DE LAS COMILLAS
+    const KEY = "TU_NUEVA_CLAVE_AQUI"; 
 
-    async function analizar(modo) {
+    async function analizar() {
+        const query = document.getElementById('productInput').value;
         const resBox = document.getElementById('result');
-        resBox.style.display = 'block';
-        resBox.innerHTML = "⏳ Analyse en cours...";
+        if (!query) return alert("Saisissez un produit");
 
-        let prompt = "";
-        if (modo === 'text') {
-            const val = document.getElementById('productInput').value;
-            if (!val) return alert("Saisissez un produit");
-            prompt = "Tu es un expert douanier marocain. Donne le code SH, TVA et droits de douane au Maroc pour : " + val;
-        } else {
-            const file = document.getElementById('fileInput').files[0];
-            if (!file) return alert("Sélectionnez un fichier");
-            prompt = "Analyse ce document pour el dédouanement au Maroc.";
-        }
+        resBox.style.display = 'block';
+        resBox.innerHTML = "⏳ Analyse ADIL en cours...";
+
+        const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + KEY;
 
         try {
-            // URL configurada para la versión v1 que es la estable
-            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-            
             const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
+                    contents: [{ parts: [{ text: "Tu es un expert douanier marocain. Donne le code SH, TVA et droits de douane pour : " + query }] }]
                 })
             });
 
             const data = await response.json();
-            
+
             if (data.error) {
-                resBox.innerHTML = "❌ <strong>Erreur:</strong> " + data.error.message;
+                resBox.innerHTML = "❌ Erreur : " + data.error.message;
             } else {
-                const texto = data.candidates[0].content.parts[0].text;
-                resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + texto.replace(/\n/g, '<br>');
+                const answer = data.candidates[0].content.parts[0].text;
+                resBox.innerHTML = "<strong>RAPPORT EXPERT :</strong><br><br>" + answer.replace(/\n/g, "<br>");
             }
         } catch (e) {
-            resBox.innerHTML = "❌ Problème de connexion au moteur IA.";
+            resBox.innerHTML = "❌ Erreur de connexion au système.";
         }
     }
 </script>
