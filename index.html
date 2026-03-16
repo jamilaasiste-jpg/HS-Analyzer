@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HS Analyzer | Jamila Expert</title>
+    <title>HS Analyzer | Expert Jamila</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #38bdf8; --bg: #020617; }
@@ -31,7 +31,7 @@
     </div>
 
     <div class="section">
-        <label>📂 Analyser Document</label>
+        <label>📂 Analyser Document (PDF/Image)</label>
         <input type="file" id="fileInput">
         <button class="btn btn-primary" style="background: rgba(255,255,255,0.1); color: white;" onclick="analizar('file')">AUDITER DOCUMENT</button>
     </div>
@@ -40,8 +40,8 @@
 </div>
 
 <script>
-    // PASO IMPORTANTE: Pega tu clave NUEVA aquí dentro de las comillas
-    const API_KEY = "AIzaSyArtYqPit_J6ZV_xkcZ4QkucFaaPZOeaOc"; 
+    // IMPORTANTE: Pega tu nueva llave aquí dentro de las comillas
+    const API_KEY = "AIzaSyATP8-1M4V1MpiUuVL5GzXoXQuqqhWxBkQ"; 
 
     async function analizar(modo) {
         const resBox = document.getElementById('result');
@@ -56,11 +56,11 @@
         } else {
             const file = document.getElementById('fileInput').files[0];
             if (!file) return alert("Sélectionnez un fichier");
-            prompt = "Analyse ce document pour le dédouanement au Maroc.";
+            prompt = "Analyse ce document pour el dédouanement au Maroc.";
         }
 
         try {
-            // URL corregida para evitar el error 'not found'
+            // URL configurada para la versión v1 que es la estable
             const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
             
             const response = await fetch(url, {
