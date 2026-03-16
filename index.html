@@ -25,60 +25,61 @@
 
         <div class="section">
             <label>🔍 Consultation par Produit</label>
-            <input type="text" id="productInput" placeholder="Ex: Smartphones, 8517...">
-            <button class="btn btn-primary" onclick="lancerAnalyse('text')">CONSULTER ADIL</button>
+            <input type="text" id="productInput" placeholder="Ex: Ventilateurs, 8517...">
+            <button class="btn btn-primary" onclick="analyser('text')">CONSULTER ADIL</button>
         </div>
 
         <div class="section">
             <label>📂 Analyser Document (PDF/Image)</label>
             <input type="file" id="fileInput">
-            <button class="btn btn-secondary" onclick="lancerAnalyse('file')">AUDITER DOCUMENT</button>
+            <button class="btn btn-secondary" onclick="analyser('file')">AUDITER DOCUMENT</button>
         </div>
 
         <div id="result"></div>
     </div>
 
     <script>
+        // Tu nueva llave corregida
         const API_KEY = "AIzaSyC-vXCCxNFRVp112T3aABH3_a4TT1-qc9U";
 
-        async function lancerAnalyse(mode) {
+        async function analyser(tipo) {
             const resBox = document.getElementById('result');
             resBox.style.display = 'block';
-            resBox.innerHTML = "⏳ Analyse en cours via Gemini 1.5...";
+            resBox.innerHTML = "⏳ Connexion au moteur ADIL...";
 
-            let userQuery = "";
-            if (mode === 'text') {
-                const query = document.getElementById('productInput').value;
-                if (!query) return alert("Saisissez un produit");
-                userQuery = "Agis en expert douanier marocain. Donne le code SH, TVA et droits de douane pour : " + query;
+            let prompt = "";
+            if (tipo === 'text') {
+                const val = document.getElementById('productInput').value;
+                if (!val) return alert("Saisissez un produit");
+                prompt = "Tu es un expert douanier marocain. Donne le code SH, TVA et droits de douane pour : " + val;
             } else {
                 const file = document.getElementById('fileInput').files[0];
-                if (!file) return alert("Sélectionnez un fichier");
-                userQuery = "Analyse ce document nommé " + file.name + " pour sa conformité douanière au Maroc.";
+                if (!file) return alert("Choisissez un fichier");
+                prompt = "Analyse ce document nommé " + file.name + " pour le dédouanement au Maroc.";
             }
 
             try {
-                // He cambiado la URL a la versión 'v1' y el modelo a 'gemini-1.5-flash'
-                const endpoint = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+                // He corregido la URL a v1beta y el modelo a 'gemini-1.5-flash-latest'
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
                 
-                const response = await fetch(endpoint, {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: userQuery }] }]
+                        contents: [{ parts: [{ text: prompt }] }]
                     })
                 });
 
                 const data = await response.json();
                 
                 if (data.error) {
-                    resBox.innerHTML = "❌ <strong>Erreur:</strong> " + data.error.message;
+                    resBox.innerHTML = "❌ <strong>Détail:</strong> " + data.error.message;
                 } else {
-                    const output = data.candidates[0].content.parts[0].text;
-                    resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + output.replace(/\n/g, '<br>');
+                    const textoRespuesta = data.candidates[0].content.parts[0].text;
+                    resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + textoRespuesta.replace(/\n/g, '<br>');
                 }
-            } catch (err) {
-                resBox.innerHTML = "❌ Problème de réseau ou de configuration.";
+            } catch (e) {
+                resBox.innerHTML = "❌ Erreur de réseau. Vérifiez votre connexion.";
             }
         }
     </script>
