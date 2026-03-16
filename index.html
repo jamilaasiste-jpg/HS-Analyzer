@@ -44,41 +44,43 @@
         async function analizar(modo) {
             const resBox = document.getElementById('result');
             resBox.style.display = 'block';
-            resBox.innerHTML = "⏳ Analyse en cours via v1beta...";
+            resBox.innerHTML = "⏳ Analyse en cours...";
 
-            let query = "";
+            let queryText = "";
             if (modo === 'text') {
                 const val = document.getElementById('productInput').value;
                 if (!val) return alert("Saisissez un produit");
-                query = "Tu es un expert douanier marocain. Analyse cet article et donne le code SH, la TVA et les droits de douane au Maroc en 2026 : " + val;
+                queryText = "Agis en expert douanier marocain. Donne le code SH, TVA et droits de douane pour : " + val;
             } else {
                 const file = document.getElementById('fileInput').files[0];
-                if (!file) return alert("Selecciónnez un fichier");
-                query = "Analyse ce document nommé " + file.name + " pour sa conformité douanière au Maroc.";
+                if (!file) return alert("Sélectionnez un fichier");
+                queryText = "Analyse ce document pour le dédouanement au Maroc.";
             }
 
             try {
-                // AQUÍ ESTÁ EL CAMBIO CLAVE: v1beta en lugar de v1
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+                // CAMBIO CLAVE: v1beta y el modelo con sufijo '-latest'
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
                 
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: query }] }]
+                        contents: [{ parts: [{ text: queryText }] }]
                     })
                 });
 
                 const data = await response.json();
                 
                 if (data.error) {
-                    resBox.innerHTML = "❌ <strong>Erreur:</strong> " + data.error.message;
-                } else {
+                    resBox.innerHTML = "❌ <strong>Détail:</strong> " + data.error.message;
+                } else if (data.candidates && data.candidates[0].content) {
                     const texto = data.candidates[0].content.parts[0].text;
                     resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + texto.replace(/\n/g, '<br>');
+                } else {
+                    resBox.innerHTML = "❌ Réponse inattendue de l'IA.";
                 }
             } catch (e) {
-                resBox.innerHTML = "❌ Erreur de connexion au moteur IA.";
+                resBox.innerHTML = "❌ Erreur de connexion au serveur.";
             }
         }
     </script>
