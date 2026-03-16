@@ -41,44 +41,44 @@
     <script>
         const API_KEY = "AIzaSyC-vXCCxNFRVp112T3aABH3_a4TT1-qc9U";
 
-        async function analizar(tipo) {
+        async function analizar(modo) {
             const resBox = document.getElementById('result');
             resBox.style.display = 'block';
             resBox.innerHTML = "⏳ Analyse en cours via v1beta...";
 
-            let prompt = "";
-            if (tipo === 'text') {
+            let query = "";
+            if (modo === 'text') {
                 const val = document.getElementById('productInput').value;
                 if (!val) return alert("Saisissez un produit");
-                prompt = "Tu es un expert douanier marocain. Donne le code SH, TVA et droits de douane au Maroc pour : " + val;
+                query = "Tu es un expert douanier marocain. Analyse cet article et donne le code SH, la TVA et les droits de douane au Maroc en 2026 : " + val;
             } else {
                 const file = document.getElementById('fileInput').files[0];
-                if (!file) return alert("Choisissez un fichier");
-                prompt = "Analyse ce document nommé " + file.name + " pour le dédouanement au Maroc.";
+                if (!file) return alert("Selecciónnez un fichier");
+                query = "Analyse ce document nommé " + file.name + " pour sa conformité douanière au Maroc.";
             }
 
             try {
-                // He cambiado la URL a v1beta, que es la que pide el error de tu captura
+                // AQUÍ ESTÁ EL CAMBIO CLAVE: v1beta en lugar de v1
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
                 
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }]
+                        contents: [{ parts: [{ text: query }] }]
                     })
                 });
 
                 const data = await response.json();
                 
                 if (data.error) {
-                    resBox.innerHTML = "❌ <strong>Détail:</strong> " + data.error.message;
+                    resBox.innerHTML = "❌ <strong>Erreur:</strong> " + data.error.message;
                 } else {
-                    const textoRespuesta = data.candidates[0].content.parts[0].text;
-                    resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + textoRespuesta.replace(/\n/g, '<br>');
+                    const texto = data.candidates[0].content.parts[0].text;
+                    resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + texto.replace(/\n/g, '<br>');
                 }
             } catch (e) {
-                resBox.innerHTML = "❌ Erreur de réseau ou de connexion.";
+                resBox.innerHTML = "❌ Erreur de connexion au moteur IA.";
             }
         }
     </script>
