@@ -1,46 +1,43 @@
-<script>
-    // REEMPLAZA ESTA CLAVE POR LA NUEVA QUE GENERES
-    const API_KEY = "AIzaSyC-vXCCxNFRVp112T3aABH3_a4TT1-qc9U"; 
+// SUSTITUYE "TU_NUEVA_CLAVE" POR LA QUE ACABAS DE CREAR
+const API_KEY = "AIzaSyAdQC0nZk_QrrLY0P-TDTjp-UfDjmIaVI0"; 
 
-    async function analizar(modo) {
-        const resBox = document.getElementById('result');
-        resBox.style.display = 'block';
-        resBox.innerHTML = "⏳ Connexion à l'expert ADIL...";
+async function analizar(modo) {
+    const resBox = document.getElementById('result');
+    resBox.style.display = 'block';
+    resBox.innerHTML = "⏳ Connexion à l'expert ADIL...";
 
-        let userQuery = "";
-        if (modo === 'text') {
-            const val = document.getElementById('productInput').value;
-            if (!val) return alert("Saisissez un produit");
-            userQuery = "Tu es un expert douanier marocain. Donne le code SH, TVA et droits de douane pour : " + val;
-        } else {
-            const file = document.getElementById('fileInput').files[0];
-            if (!file) return alert("Sélectionnez un fichier");
-            userQuery = "Analyse ce document pour le dédouanement au Maroc.";
-        }
-
-        try {
-            // Usamos la versión estable 'v1' y el nombre de modelo completo
-            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-            
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: userQuery }] }]
-                })
-            });
-
-            const data = await response.json();
-            
-            if (data.error) {
-                // Si la clave es nueva, este error ya no aparecerá
-                resBox.innerHTML = "❌ <strong>Erreur:</strong> " + data.error.message;
-            } else {
-                const texto = data.candidates[0].content.parts[0].text;
-                resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + texto.replace(/\n/g, '<br>');
-            }
-        } catch (e) {
-            resBox.innerHTML = "❌ Problème de connexion. Vérifiez la nouvelle clé API.";
-        }
+    let userQuery = "";
+    if (modo === 'text') {
+        const val = document.getElementById('productInput').value;
+        if (!val) return alert("Saisissez un produit");
+        userQuery = "Tu es un expert douanier marocain. Donne le code SH, TVA et droits de douane pour : " + val;
+    } else {
+        const file = document.getElementById('fileInput').files[0];
+        if (!file) return alert("Sélectionnez un fichier");
+        userQuery = "Analyse ce document pour le dédouanement au Maroc.";
     }
-</script>
+
+    try {
+        // Esta es la URL correcta para evitar el error de "not found"
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: userQuery }] }]
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.error) {
+            resBox.innerHTML = "❌ <strong>Erreur:</strong> " + data.error.message;
+        } else {
+            const texto = data.candidates[0].content.parts[0].text;
+            resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + texto.replace(/\n/g, '<br>');
+        }
+    } catch (e) {
+        resBox.innerHTML = "❌ Erreur de connexion au serveur.";
+    }
+}
