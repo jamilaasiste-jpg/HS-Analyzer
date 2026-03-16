@@ -34,39 +34,40 @@
 </div>
 
 <script>
-    // 1. GENERA UNA CLAVE TOTALMENTE NUEVA
+    // 1. GENERA UNA CLAVE NUEVA (la anterior no sirve)
     // 2. PÉGALA AQUÍ DENTRO DE LAS COMILLAS
-    const KEY = "TU_NUEVA_CLAVE_AQUI"; 
+    const MI_LLAVE = "AIzaSyA3wEAKWU7_SFQHm4_2cVDPyXk59oe60NI"; 
 
     async function analizar() {
-        const query = document.getElementById('productInput').value;
+        const val = document.getElementById('productInput').value;
         const resBox = document.getElementById('result');
-        if (!query) return alert("Saisissez un produit");
+        if (!val) return alert("Saisissez un produit");
 
         resBox.style.display = 'block';
-        resBox.innerHTML = "⏳ Analyse ADIL en cours...";
+        resBox.innerHTML = "⏳ Analyse en cours...";
 
-        const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + KEY;
+        // URL CORREGIDA CON v1beta PARA EVITAR EL ERROR 'NOT FOUND'
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${MI_LLAVE}`;
 
         try {
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: "Tu es un expert douanier marocain. Donne le code SH, TVA et droits de douane pour : " + query }] }]
+                    contents: [{ parts: [{ text: "Tu es un expert douanier marocain. Donne le code SH, TVA et droits de douane au Maroc pour : " + val }] }]
                 })
             });
 
             const data = await response.json();
 
             if (data.error) {
-                resBox.innerHTML = "❌ Erreur : " + data.error.message;
+                resBox.innerHTML = "❌ <strong>Erreur:</strong> " + data.error.message;
             } else {
-                const answer = data.candidates[0].content.parts[0].text;
-                resBox.innerHTML = "<strong>RAPPORT EXPERT :</strong><br><br>" + answer.replace(/\n/g, "<br>");
+                const texto = data.candidates[0].content.parts[0].text;
+                resBox.innerHTML = "<strong>RAPPORT ADIL :</strong><br><br>" + texto.replace(/\n/g, '<br>');
             }
         } catch (e) {
-            resBox.innerHTML = "❌ Erreur de connexion au système.";
+            resBox.innerHTML = "❌ Problème de connexion. Vérifiez la nouvelle clé API.";
         }
     }
 </script>
