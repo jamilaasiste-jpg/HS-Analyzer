@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HS Analyzer Pro | Jamila Moussaoui</title>
+    <title>HS Analyzer | Jamila Expert</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #38bdf8; }
@@ -16,8 +16,7 @@
         .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
         .btn-primary { background: var(--accent); color: #000; }
         .btn-secondary { background: rgba(255,255,255,0.1); color: white; margin-top: 10px; }
-        #result { margin-top: 25px; padding: 20px; border-radius: 15px; background: rgba(0,0,0,0.4); display: none; border-left: 4px solid var(--accent); white-space: pre-wrap; line-height: 1.6; }
-        .loading { color: var(--accent); font-style: italic; }
+        #result { margin-top: 25px; padding: 20px; border-radius: 15px; background: rgba(0,0,0,0.4); display: none; border-left: 4px solid var(--accent); white-space: pre-wrap; line-height: 1.6; font-size: 0.95rem; }
     </style>
 </head>
 <body>
@@ -27,41 +26,40 @@
 
         <div class="section">
             <label>🔍 Consultation par Produit</label>
-            <input type="text" id="productInput" placeholder="Ex: Ventilateurs industriels, 8517...">
-            <button class="btn btn-primary" onclick="llamarIA('text')">CONSULTER ADIL</button>
+            <input type="text" id="productInput" placeholder="Ex: Smartphones, 8517...">
+            <button class="btn btn-primary" onclick="analizar('text')">CONSULTER ADIL</button>
         </div>
 
         <div class="section">
             <label>📂 Analyser Document (PDF/Image)</label>
             <input type="file" id="fileInput">
-            <button class="btn btn-secondary" onclick="llamarIA('file')">AUDITER DOCUMENT</button>
+            <button class="btn btn-secondary" onclick="analizar('file')">AUDITER DOCUMENT</button>
         </div>
 
         <div id="result"></div>
     </div>
 
     <script>
-        // Tu clave API lista para usar
-        const API_KEY = "AIzaSyCr6lGXsnQ8zjEMOP8ZNwCWjVmDKhvyyis";
+        const API_KEY = "AIzaSyC-vXCCxNFRVp112T3aABH3_a4TT1-qc9U";
 
-        async function llamarIA(modo) {
+        async function analizar(tipo) {
             const resBox = document.getElementById('result');
             resBox.style.display = 'block';
-            resBox.innerHTML = '<span class="loading">🧠 Analyse intelligente en cours...</span>';
+            resBox.innerHTML = "⏳ Analyse en cours...";
 
             let prompt = "";
-            if (modo === 'text') {
+            if (tipo === 'text') {
                 const val = document.getElementById('productInput').value;
                 if (!val) return alert("Saisissez un produit");
-                prompt = `Tu es un expert douanier marocain. Analyse l'article suivant et donne le code SH probable, les droits de douane et la TVA applicables au Maroc en 2026: ${val}`;
+                prompt = "Agis en tant qu'expert douanier marocain. Donne le code SH probable, TVA et droits de douane au Maroc en 2026 pour : " + val;
             } else {
                 const file = document.getElementById('fileInput').files[0];
-                if (!file) return alert("Sélectionnez un fichier");
-                prompt = `Agis en tant qu'expert douanier. J'ai un document nommé ${file.name}. Explique-moi les étapes pour vérifier sa conformité ADIL au Maroc.`;
+                if (!file) return alert("Choisissez un fichier");
+                prompt = "Analyse ce document de douane nommé " + file.name + " et explique la procédure de conformité au Maroc.";
             }
 
             try {
-                // URL corregida para máxima compatibilidad
+                // Hemos actualizado a la URL v1beta que es la compatible con Flash 1.5
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
                 
                 const response = await fetch(url, {
@@ -75,13 +73,13 @@
                 const data = await response.json();
                 
                 if (data.error) {
-                    resBox.innerHTML = "❌ <strong>Détail:</strong> " + data.error.message;
+                    resBox.innerHTML = "❌ <strong>Erreur:</strong> " + data.error.message;
                 } else {
-                    const respuesta = data.candidates[0].content.parts[0].text;
-                    resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + respuesta.replace(/\n/g, '<br>');
+                    const textoRespuesta = data.candidates[0].content.parts[0].text;
+                    resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + textoRespuesta.replace(/\n/g, '<br>');
                 }
             } catch (e) {
-                resBox.innerHTML = "❌ Erreur de connexion. Vérifiez votre accès internet.";
+                resBox.innerHTML = "❌ Erreur de connexion au serveur IA.";
             }
         }
     </script>
