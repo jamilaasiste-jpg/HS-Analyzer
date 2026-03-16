@@ -1,87 +1,46 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HS Analyzer | Expert Jamila</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        :root { --accent: #38bdf8; }
-        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 40px; width: 100%; max-width: 600px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        h1 { font-weight: 300; letter-spacing: 5px; color: var(--accent); text-align: center; margin-bottom: 5px; }
-        .section { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-        input[type="text"], input[type="file"] { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
-        .btn-primary { background: var(--accent); color: #000; }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: white; margin-top: 10px; }
-        #result { margin-top: 25px; padding: 20px; border-radius: 15px; background: rgba(0,0,0,0.4); display: none; border-left: 4px solid var(--accent); white-space: pre-wrap; line-height: 1.6; font-size: 0.95rem; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>HS ANALYZER</h1>
-        <p style="text-align:center; opacity:0.6; font-size:0.8rem; margin-top:0;">Système Expert de Jamila Moussaoui</p>
+<script>
+    // REEMPLAZA ESTA CLAVE POR LA NUEVA QUE GENERES
+    const API_KEY = "AIzaSyC-vXCCxNFRVp112T3aABH3_a4TT1-qc9U"; 
 
-        <div class="section">
-            <label>🔍 Consultation par Produit</label>
-            <input type="text" id="productInput" placeholder="Ex: Smartphones, 8517...">
-            <button class="btn btn-primary" onclick="analizar('text')">CONSULTER ADIL</button>
-        </div>
+    async function analizar(modo) {
+        const resBox = document.getElementById('result');
+        resBox.style.display = 'block';
+        resBox.innerHTML = "⏳ Connexion à l'expert ADIL...";
 
-        <div class="section">
-            <label>📂 Analyser Document (PDF/Image)</label>
-            <input type="file" id="fileInput">
-            <button class="btn btn-secondary" onclick="analizar('file')">AUDITER DOCUMENT</button>
-        </div>
-
-        <div id="result"></div>
-    </div>
-
-    <script>
-        // Tu clave API (Asegúrate de que siga activa en Google AI Studio)
-        const API_KEY = "AIzaSyC-vXCCxNFRVp112T3aABH3_a4TT1-qc9U";
-
-        async function analizar(modo) {
-            const resBox = document.getElementById('result');
-            resBox.style.display = 'block';
-            resBox.innerHTML = "⏳ Analyse en cours via v1beta...";
-
-            let userQuery = "";
-            if (modo === 'text') {
-                const val = document.getElementById('productInput').value;
-                if (!val) return alert("Saisissez un produit");
-                userQuery = "Tu es un expert douanier marocain. Donne le code SH, TVA et droits de douane pour : " + val;
-            } else {
-                const file = document.getElementById('fileInput').files[0];
-                if (!file) return alert("Sélectionnez un fichier");
-                userQuery = "Analyse ce document pour sa conformité douanière au Maroc.";
-            }
-
-            try {
-                // URL corregida a v1beta y modelo con nombre completo
-                const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
-                
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: userQuery }] }]
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (data.error) {
-                    resBox.innerHTML = "❌ <strong>Erreur:</strong> " + data.error.message;
-                } else {
-                    const output = data.candidates[0].content.parts[0].text;
-                    resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + output.replace(/\n/g, '<br>');
-                }
-            } catch (err) {
-                resBox.innerHTML = "❌ Problème de connexion ou Clé API bloquée.";
-            }
+        let userQuery = "";
+        if (modo === 'text') {
+            const val = document.getElementById('productInput').value;
+            if (!val) return alert("Saisissez un produit");
+            userQuery = "Tu es un expert douanier marocain. Donne le code SH, TVA et droits de douane pour : " + val;
+        } else {
+            const file = document.getElementById('fileInput').files[0];
+            if (!file) return alert("Sélectionnez un fichier");
+            userQuery = "Analyse ce document pour le dédouanement au Maroc.";
         }
-    </script>
-</body>
-</html>
+
+        try {
+            // Usamos la versión estable 'v1' y el nombre de modelo completo
+            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: userQuery }] }]
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.error) {
+                // Si la clave es nueva, este error ya no aparecerá
+                resBox.innerHTML = "❌ <strong>Erreur:</strong> " + data.error.message;
+            } else {
+                const texto = data.candidates[0].content.parts[0].text;
+                resBox.innerHTML = "<strong>ANALYSE EXPERTE :</strong><br><br>" + texto.replace(/\n/g, '<br>');
+            }
+        } catch (e) {
+            resBox.innerHTML = "❌ Problème de connexion. Vérifiez la nouvelle clé API.";
+        }
+    }
+</script>
