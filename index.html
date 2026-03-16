@@ -3,70 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HS Analyzer | Expert ADIL</title>
+    <title>ADIL Expert Pro | Jamila Moussaoui</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #38bdf8; --bg: #020617; }
-        body { background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 40px; width: 100%; max-width: 550px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        h1 { font-weight: 300; letter-spacing: 5px; color: var(--accent); text-align: center; margin-bottom: 5px; text-transform: uppercase; }
-        .section { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-        label { display: block; margin-bottom: 10px; font-size: 0.85rem; color: var(--accent); }
-        input[type="text"] { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; }
-        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; text-transform: uppercase; }
+        body { background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 40px; width: 100%; max-width: 650px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        h1 { font-weight: 300; letter-spacing: 5px; color: var(--accent); text-align: center; text-transform: uppercase; margin-bottom: 5px; }
+        .config-bar { display: flex; justify-content: space-between; margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; }
+        select { background: transparent; color: var(--accent); border: none; outline: none; cursor: pointer; font-weight: bold; }
+        .section { margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        label { display: block; margin-bottom: 10px; font-size: 0.85rem; color: var(--accent); font-weight: 600; }
+        input[type="text"], input[type="file"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; margin-bottom: 10px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .btn-primary { background: var(--accent); color: #000; }
+        .btn-contrast { background: #8b5cf6; color: white; margin-top: 10px; }
         #result { margin-top: 30px; padding: 20px; border-radius: 15px; background: rgba(0,0,0,0.4); display: none; border-left: 4px solid var(--accent); white-space: pre-wrap; line-height: 1.6; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>HS ANALYZER</h1>
-    <p style="text-align:center; opacity:0.6; font-size:0.8rem; margin-top:0;">Expert System by Jamila Moussaoui</p>
+    <h1>ADIL EXPERT</h1>
+    <p style="text-align:center; opacity:0.6; font-size:0.8rem; margin-bottom:20px;">Intelligence Douanière Marocaine</p>
+
+    <div class="config-bar">
+        <span>🌐 Langue: 
+            <select id="langSelect">
+                <option value="français">Français</option>
+                <option value="arabe">العربية</option>
+                <option value="espagnol">Español</option>
+            </select>
+        </span>
+        <span id="status" style="font-size: 0.8rem; color: #10b981;">● Système Prêt</span>
+    </div>
 
     <div class="section">
-        <label>🔍 Consultation par Produit (Système ADIL)</label>
+        <label>🔍 Analyse de Produit / Code SH</label>
         <input type="text" id="productInput" placeholder="Ex: Smartphones, 8517...">
-        <button class="btn btn-primary" onclick="analizar()">LANCER L'ANALYSE</button>
+        <button class="btn btn-primary" onclick="analizar('text')">Consulter ADIL</button>
+    </div>
+
+    <div class="section">
+        <label>📄 Contraste de Documents (Audit)</label>
+        <input type="file" id="fileInput">
+        <button class="btn btn-contrast" onclick="analizar('file')">Comparer & Vérifier</button>
+        <p style="font-size: 0.7rem; opacity: 0.5; margin-top: 10px;">Vérifie la conformité entre facture y tarif douanier.</p>
     </div>
 
     <div id="result"></div>
 </div>
 
 <script>
-    // USANDO TU CLAVE 4
-    const API_KEY = "AIzaSyC_jdGjpIH61SwWzXuklmmm-qgga6rGfTo"; 
+    const API_KEY = "AIzaSyAo-GygylzOaE1RR-XTiFeFmPS_Sw8__ZE"; 
 
-    async function analizar() {
-        const val = document.getElementById('productInput').value;
+    async function analizar(modo) {
         const resBox = document.getElementById('result');
-        if (!val) return alert("Saisissez un produit");
-
+        const idioma = document.getElementById('langSelect').value;
         resBox.style.display = 'block';
-        resBox.innerHTML = "⏳ Connexion à l'expert ADIL en cours...";
+        resBox.innerHTML = "⏳ Analyse experte en cours...";
 
-        // URL CORREGIDA A v1beta (La que tu error image_e1dfc5.png pedía)
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+        let prompt = `Tu es ADIL, l'expert douanier du Maroc. Réponds en ${idioma}. `;
+        
+        if (modo === 'text') {
+            const val = document.getElementById('productInput').value;
+            if (!val) return alert("Saisissez un produit");
+            prompt += `Analyse ce produit pour le tarif 2026 : ${val}. Donne le code SH, TVA, Droits de Douane et taxes para-fiscales.`;
+        } else {
+            const file = document.getElementById('fileInput').files[0];
+            if (!file) return alert("Sélectionnez un document");
+            prompt += `Agis comme un auditeur. Analyse ce document (Facture/BL) : ${file.name}. Vérifie les erreurs potentielles de classification SH et de calcul de taxes pour le Maroc.`;
+        }
 
         try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: "Tu es un expert douanier marocain. Analyse ce produit pour le tarif 2026. Donne le code SH, la TVA et los derechos de aduana en Marruecos para: " + val }] }]
-                })
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
 
             const data = await response.json();
-
             if (data.error) {
-                resBox.innerHTML = "❌ <strong>Détail:</strong> " + data.error.message;
+                resBox.innerHTML = "❌ Error: " + data.error.message;
             } else {
                 const texto = data.candidates[0].content.parts[0].text;
-                resBox.innerHTML = "<strong>RAPPORT EXPERT ADIL :</strong><br><br>" + texto.replace(/\n/g, '<br>');
+                resBox.innerHTML = `<strong>RESULTAT (${idioma.toUpperCase()}) :</strong><br><br>` + texto.replace(/\n/g, '<br>');
             }
         } catch (e) {
-            resBox.innerHTML = "❌ Problème de connexion. Vérifiez si la clé est encore active.";
+            resBox.innerHTML = "❌ Erreur de connexion.";
         }
     }
 </script>
