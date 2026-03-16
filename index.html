@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HS Analyzer Pro | Jamila Moussaoui</title>
+    <title>HS Analyzer | Jamila Expert</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #38bdf8; --bg: #020617; }
@@ -31,7 +31,7 @@
     </div>
 
     <div class="section">
-        <label>📂 Analyser Document (PDF/Image)</label>
+        <label>📂 Analyser Document</label>
         <input type="file" id="fileInput">
         <button class="btn btn-primary" style="background: rgba(255,255,255,0.1); color: white;" onclick="analizar('file')">AUDITER DOCUMENT</button>
     </div>
@@ -40,13 +40,13 @@
 </div>
 
 <script>
-    // IMPORTANTE: Genera una clave nueva. La anterior fue bloqueada por GitHub.
-    const API_KEY = "AIzaSyC9IH3_kbhzOkthFKtQaD8XyZXqGPR_YXg"; 
+    // PASO IMPORTANTE: Pega tu clave NUEVA aquí dentro de las comillas
+    const API_KEY = "AIzaSyArtYqPit_J6ZV_xkcZ4QkucFaaPZOeaOc"; 
 
     async function analizar(modo) {
         const resBox = document.getElementById('result');
         resBox.style.display = 'block';
-        resBox.innerHTML = "⏳ Analyse en cours via Gemini 1.5 Flash...";
+        resBox.innerHTML = "⏳ Analyse en cours...";
 
         let prompt = "";
         if (modo === 'text') {
@@ -60,7 +60,7 @@
         }
 
         try {
-            // URL con el modelo específico para evitar el error 'not found'
+            // URL corregida para evitar el error 'not found'
             const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
             
             const response = await fetch(url, {
